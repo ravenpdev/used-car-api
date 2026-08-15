@@ -17,8 +17,12 @@
 
 **TODOS**
 
-[ ] - signin route
-[ ] - signup route
-[ ] - get report route
-[ ] - post report route
-[ ] - ptach report route
+- [ ] signin route
+
+- [ ] signup route
+
+- [ ] get report route
+
+- [ ] post report route
+
+- [ ] ptach report route
