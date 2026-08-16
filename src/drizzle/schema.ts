@@ -14,8 +14,13 @@ export const users = pgTable('users', {
     .defaultNow(),
 });
 
+// export const reports = pgTable('reports', {
+//   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+// });
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type UserWithoutPassword = Omit<User, 'password'>;
 
 export const insertUserSchema = createInsertSchema(users, {
   email: z.email(),

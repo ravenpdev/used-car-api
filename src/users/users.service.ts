@@ -7,7 +7,7 @@ import {
 import { DRIZZLE } from 'src/drizzle/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../drizzle/schema';
-import { users, type User } from '../drizzle/schema';
+import { users, type UserWithoutPassword, type User } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 
@@ -20,13 +20,25 @@ export class UsersService {
     @Inject(DRIZZLE) private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
-  findAll() {
-    return this.db.select().from(users);
+  findAll(): Promise<UserWithoutPassword[]> {
+    return this.db
+      .select({
+        id: users.id,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users);
   }
 
-  async create(data: CreateUserDto): Promise<User> {
+  async create(data: CreateUserDto): Promise<UserWithoutPassword> {
     try {
-      const [user] = await this.db.insert(users).values(data).returning();
+      const [user] = await this.db.insert(users).values(data).returning({
+        id: users.id,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      });
 
       return user;
     } catch (error: unknown) {
@@ -38,8 +50,16 @@ export class UsersService {
     }
   }
 
-  async findById(id: number): Promise<User> {
-    const [user] = await this.db.select().from(users).where(eq(users.id, id));
+  async findById(id: number): Promise<UserWithoutPassword> {
+    const [user] = await this.db
+      .select({
+        id: users.id,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(eq(users.id, id));
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -48,12 +68,17 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, data: UpdateUserDto): Promise<User> {
+  async update(id: number, data: UpdateUserDto): Promise<UserWithoutPassword> {
     const [user] = await this.db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(users.id, id))
-      .returning();
+      .returning({
+        id: users.id,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      });
 
     if (!user) {
       throw new NotFoundException('User not found');
