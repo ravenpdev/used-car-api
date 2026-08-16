@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: cars
+      POSTGRES_USER: cars
+      POSTGRES_PASSWORD: cars
+      # postgres 18 defaults to using this if unset, but being explicit avoids surprises
+      PGDATA: /var/lib/postgresql/18/docker
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U cars -d cars']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/18/docker
+volumes:
+  db_data:
