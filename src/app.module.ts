@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { HttpExceptionFilter } from './http-exception.filter';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
     DrizzleModule,
     UsersModule,
     ReportsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,0 +1,47 @@
+@baseUrl=http://localhost:3000
+
+### signup
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "test@test.com",
+  "password": "password",
+  "confirmPassword": "password"
+}
+
+### signin
+POST {{baseUrl}}/auth/signin
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "test@test.com",
+  "password": "password",
+}
+
+### signout
+POST {{baseUrl}}/auth/signout
+Accept: application/json
+
+### whoami
+GET {{baseUrl}}/auth/whoami
+Accept: application/json
+
+### all users
+GET {{baseUrl}}/users
+Accept: application/json
+
+### find user by id
+GET {{baseUrl}}/users/8
+Accept: application/json
+
+### set color
+# GET {{baseUrl}}/auth/colors/red
+# Accept: application/json
+
+### get color
+# GET {{baseUrl}}/auth/colors
+# Accept: application/json
+

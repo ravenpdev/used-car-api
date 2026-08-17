@@ -7,12 +7,15 @@ import {
 import { DRIZZLE } from 'src/drizzle/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../drizzle/schema';
-import { users, type UserWithoutPassword, type User } from '../drizzle/schema';
+import {
+  NewUser,
+  User,
+  users,
+  type UserWithoutPassword,
+} from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
-
-// NOTE: LIMITATION throwing NotFoundException in a service only works on HTTP
-// Using this service in WebSocket or GRPC will not handle the exception
+import { UpdateUserDto } from './user.dto';
+import { isUniqueError } from 'src/drizzle/drizzle.utils';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +34,7 @@ export class UsersService {
       .from(users);
   }
 
-  async create(data: CreateUserDto): Promise<UserWithoutPassword> {
+  async create(data: NewUser): Promise<UserWithoutPassword> {
     try {
       const [user] = await this.db.insert(users).values(data).returning({
         id: users.id,
@@ -42,10 +45,9 @@ export class UsersService {
 
       return user;
     } catch (error: unknown) {
-      if (error instanceof Error && 'code' in error && error.code === '23505') {
+      if (isUniqueError(error)) {
         throw new ConflictException('Email already exists');
       }
-
       throw error;
     }
   }
@@ -59,7 +61,8 @@ export class UsersService {
         updatedAt: users.updatedAt,
       })
       .from(users)
-      .where(eq(users.id, id));
+      .where(eq(users.id, id))
+      .limit(1);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -68,7 +71,24 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, data: UpdateUserDto): Promise<UserWithoutPassword> {
+  async findByEmail(email: string): Promise<User | null> {
+    const [user] = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async update(
+    id: number,
+    data: Partial<NewUser>,
+  ): Promise<UserWithoutPassword> {
     const [user] = await this.db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
