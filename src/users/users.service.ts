@@ -14,7 +14,6 @@ import {
   type UserWithoutPassword,
 } from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
-import { UpdateUserDto } from './user.dto';
 import { isUniqueError } from 'src/drizzle/drizzle.utils';
 
 @Injectable()

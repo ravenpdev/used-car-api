@@ -1,14 +1,22 @@
-import { Body, Controller, Get, Post, Session } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Session,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SigninDto, SignupDto } from './auth.dto';
-import { UsersService } from 'src/users/users.service';
+import { CurrentUser } from '@app/common';
+import type { UserWithoutPassword } from 'src/drizzle/schema';
+import { AuthGuard } from '@app/common/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
   async signUp(
@@ -33,12 +41,14 @@ export class AuthController {
   }
 
   @Post('/signout')
+  @HttpCode(HttpStatus.NO_CONTENT)
   signOut(@Session() session: Record<string, any>) {
     session.userId = null;
   }
 
   @Get('/whoami')
-  whoAmI(@Session() session: Record<string, any>) {
-    return this.usersService.findById(Number(session.userId));
+  @UseGuards(AuthGuard)
+  whoAmI(@CurrentUser() currentUser: UserWithoutPassword) {
+    return currentUser;
   }
 }
