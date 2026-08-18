@@ -9,8 +9,8 @@ export const DRIZZLE = Symbol('DRIZZLE');
 export const DrizzleProvider: Provider = {
   provide: DRIZZLE,
   inject: [ConfigService],
-  useFactory: (configService: ConfigService) => {
-    const connectionString = configService.get<string>('DATABASE_URL')!;
+  useFactory: (config: ConfigService) => {
+    const connectionString = config.getOrThrow('database.url');
 
     const client = postgres(connectionString, {
       max: 10,

@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { DRIZZLE, DrizzleProvider } from './drizzle.provider';
+import { ConfigModule } from '@app/config';
 
 @Global()
 @Module({
