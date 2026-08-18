@@ -1,3 +1,5 @@
+import { DB, users, type NewUser } from '@app/database';
+import { UsersService } from '@app/users';
 import {
   ConflictException,
   Inject,
@@ -5,16 +7,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import { DRIZZLE } from 'src/drizzle/drizzle.provider';
-import * as schema from '../drizzle/schema';
-import { UsersService } from 'src/users/users.service';
 import * as argon2 from 'argon2';
-import { NewUser, users } from '../drizzle/schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(DRIZZLE) private readonly db: NodePgDatabase<typeof schema>,
+    @Inject(DB)
+    private readonly db: NodePgDatabase<typeof import('@app/database/schema')>,
     private readonly usersService: UsersService,
   ) {}
 

@@ -1,25 +1,25 @@
+import { isUniqueError } from '@app/common';
+import {
+  DB,
+  users,
+  type User,
+  type NewUser,
+  type UserWithoutPassword,
+} from '@app/database';
 import {
   ConflictException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DRIZZLE } from 'src/drizzle/drizzle.provider';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../drizzle/schema';
-import {
-  NewUser,
-  User,
-  users,
-  type UserWithoutPassword,
-} from '../drizzle/schema';
 import { eq } from 'drizzle-orm';
-import { isUniqueError } from 'src/drizzle/drizzle.utils';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(DRIZZLE) private readonly db: NodePgDatabase<typeof schema>,
+    @Inject(DB)
+    private readonly db: NodePgDatabase<typeof import('@app/database/schema')>,
   ) {}
 
   findAll(): Promise<UserWithoutPassword[]> {

@@ -17,9 +17,9 @@
 
 **TODOS**
 
-- [ ] signin route
+- [✔️] signin route
 
-- [ ] signup route
+- [✔️] signup route
 
 - [ ] get report route
 

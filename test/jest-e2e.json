@@ -11,7 +11,10 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
+    "^@app/auth(|/.*)$": "<rootDir>/../libs/auth/src/$1",
     "^@app/common(|/.*)$": "<rootDir>/../libs/common/src/$1",
-    "^@app/config(|/.*)$": "<rootDir>/../libs/config/src/$1"
+    "^@app/config(|/.*)$": "<rootDir>/../libs/config/src/$1",
+    "^@app/database(|/.*)$": "<rootDir>/../libs/database/src/$1",
+    "^@app/users(|/.*)$": "<rootDir>/../libs/users/src/$1"
   }
 }

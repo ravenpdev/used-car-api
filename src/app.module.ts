@@ -1,24 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ReportsModule } from './reports/reports.module';
-import { DrizzleModule } from './drizzle/drizzle.module';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
-import { HttpExceptionFilter } from './http-exception.filter';
-import { AuthModule } from './auth/auth.module';
-import { CurrentUserInterceptor } from '@app/common';
+import { CurrentUserInterceptor, HttpExceptionFilter } from '@app/common';
 import { ConfigModule } from '@app/config';
+import { DatabaseModule } from '@app/database';
+import { UsersModule } from '@app/users';
+import { AuthModule } from '@app/auth';
 
 @Module({
-  imports: [
-    ConfigModule,
-    DrizzleModule,
-    UsersModule,
-    ReportsModule,
-    AuthModule,
-  ],
+  imports: [ConfigModule, DatabaseModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [
     AppService,

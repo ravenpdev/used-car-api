@@ -9,10 +9,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthGuard, CurrentUser } from '@app/common';
+import type { UserWithoutPassword } from '@app/database';
 import { SigninDto, SignupDto } from './auth.dto';
-import { CurrentUser } from '@app/common';
-import type { UserWithoutPassword } from 'src/drizzle/schema';
-import { AuthGuard } from '@app/common/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
