@@ -1,40 +1,22 @@
-import { DB, users, type NewUser } from '@app/database';
 import { UsersService } from '@app/users';
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as argon2 from 'argon2';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import argon2 from 'argon2';
+import { SigninDto, SignupDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @Inject(DB)
-    private readonly db: NodePgDatabase<typeof import('@app/database/schema')>,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  async signup(data: NewUser) {
-    const isExists = await this.usersService.findByEmail(data.email);
-
-    if (isExists) {
-      throw new ConflictException('Email already exists');
-    }
-
+  async signUp(data: SignupDto) {
     const hashedPassword = await argon2.hash(data.password);
 
-    const [user] = await this.db
-      .insert(users)
-      .values({ email: data.email, password: hashedPassword })
-      .returning({ id: users.id });
-
-    return user;
+    return this.usersService.create({
+      email: data.email,
+      password: hashedPassword,
+    });
   }
 
-  async signin(data: NewUser) {
+  async signIn(data: SigninDto) {
     const user = await this.usersService.findByEmail(data.email);
 
     if (!user) {
@@ -45,6 +27,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid username or password');
     }
 
-    return { id: user.id };
+    const { password, ...rest } = user;
+    return rest;
   }
 }

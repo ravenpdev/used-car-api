@@ -22,7 +22,7 @@ export class AuthController {
     @Session() session: Record<string, any>,
     @Body() body: SignupDto,
   ) {
-    const user = await this.authService.signup(body);
+    const user = await this.authService.signUp(body);
     session.userId = user.id;
 
     return user;
@@ -33,7 +33,7 @@ export class AuthController {
     @Session() session: Record<string, any>,
     @Body() body: SigninDto,
   ) {
-    const user = await this.authService.signin(body);
+    const user = await this.authService.signIn(body);
     session.userId = user.id;
 
     return user;

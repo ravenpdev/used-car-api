@@ -17,17 +17,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  all() {
+    return this.usersService.all();
   }
 
-  @Post('/signup')
-  createUser(@Body() body: CreateUserDto) {
+  @Post()
+  create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
   }
 
   @Get('/:id')
-  findUserById(@Param('id') id: string) {
+  findById(@Param('id') id: string) {
     return this.usersService.findById(Number(id));
   }
 

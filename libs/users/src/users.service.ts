@@ -1,11 +1,4 @@
-import { isUniqueError } from '@app/common';
-import {
-  DB,
-  users,
-  type User,
-  type NewUser,
-  type UserWithoutPassword,
-} from '@app/database';
+import { DB, users, type User, type UserWithoutPassword } from '@app/database';
 import {
   ConflictException,
   Inject,
@@ -14,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +16,7 @@ export class UsersService {
     private readonly db: NodePgDatabase<typeof import('@app/database/schema')>,
   ) {}
 
-  findAll(): Promise<UserWithoutPassword[]> {
+  all(): Promise<UserWithoutPassword[]> {
     return this.db
       .select({
         id: users.id,
@@ -33,22 +27,21 @@ export class UsersService {
       .from(users);
   }
 
-  async create(data: NewUser): Promise<UserWithoutPassword> {
-    try {
-      const [user] = await this.db.insert(users).values(data).returning({
-        id: users.id,
-        email: users.email,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      });
+  async create(data: CreateUserDto): Promise<UserWithoutPassword> {
+    const isExist = await this.findByEmail(data.email);
 
-      return user;
-    } catch (error: unknown) {
-      if (isUniqueError(error)) {
-        throw new ConflictException('Email already exists');
-      }
-      throw error;
+    if (isExist) {
+      throw new ConflictException('Email already exists');
     }
+
+    const [user] = await this.db.insert(users).values(data).returning({
+      id: users.id,
+      email: users.email,
+      createdAt: users.createdAt,
+      updatedAt: users.updatedAt,
+    });
+
+    return user;
   }
 
   async findById(id: number): Promise<UserWithoutPassword> {
@@ -84,10 +77,7 @@ export class UsersService {
     return user;
   }
 
-  async update(
-    id: number,
-    data: Partial<NewUser>,
-  ): Promise<UserWithoutPassword> {
+  async update(id: number, data: UpdateUserDto): Promise<UserWithoutPassword> {
     const [user] = await this.db
       .update(users)
       .set({ ...data, updatedAt: new Date() })
