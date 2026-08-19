@@ -1,11 +1,16 @@
-import { DB, users, type User, type UserWithoutPassword } from '@app/database';
+import {
+  type Database,
+  DB,
+  users,
+  type User,
+  type UserWithoutPassword,
+} from '@app/database';
 import {
   ConflictException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 
@@ -13,7 +18,7 @@ import { CreateUserDto, UpdateUserDto } from './user.dto';
 export class UsersService {
   constructor(
     @Inject(DB)
-    private readonly db: NodePgDatabase<typeof import('@app/database/schema')>,
+    private readonly db: Database,
   ) {}
 
   all(): Promise<UserWithoutPassword[]> {

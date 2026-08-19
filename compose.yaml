@@ -17,5 +17,16 @@ services:
       retries: 5
     volumes:
       - db_data:/var/lib/postgresql/18/docker
+  db-test:
+    image: postgres:18-alpine
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_DB: cars_test
+      POSTGRES_USER: cars
+      POSTGRES_PASSWORD: cars
+    # No persistent data, the database will disappers when the container is restarted
+    tmpfs:
+      - /var/lib/postgresql/18/docker
 volumes:
   db_data:

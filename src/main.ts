@@ -2,18 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
-import session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET!,
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
 
   const config = new DocumentBuilder()
     .setTitle('Used Car Pricing')

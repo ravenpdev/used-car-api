@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
@@ -8,6 +8,8 @@ import { ConfigModule } from '@app/config';
 import { DatabaseModule } from '@app/database';
 import { UsersModule } from '@app/users';
 import { AuthModule } from '@app/auth';
+import session from 'express-session';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [ConfigModule, DatabaseModule, AuthModule, UsersModule],
@@ -32,4 +34,18 @@ import { AuthModule } from '@app/auth';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  constructor(private readonly configService: ConfigService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        session({
+          secret: this.configService.getOrThrow('auth.sessionSecret'),
+          resave: false,
+          saveUninitialized: false,
+        }),
+      )
+      .forRoutes('*');
+  }
+}
