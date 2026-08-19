@@ -48,7 +48,7 @@ describe('AuthController', () => {
     });
   });
 
-  it('should sigin', async () => {
+  it('should signin', async () => {
     const dto: SigninDto = {
       email: 'test@test.com',
       password: 'password',
@@ -74,5 +74,13 @@ describe('AuthController', () => {
     };
 
     expect(controller.whoAmI(currentUser)).toEqual(currentUser);
+  });
+
+  it('should logout', async () => {
+    const session: Record<string, any> = { userId: 1 };
+
+    controller.signOut(session);
+
+    expect(session.userId).toBeNull();
   });
 });
