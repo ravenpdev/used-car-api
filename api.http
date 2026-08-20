@@ -6,9 +6,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "test@test.com",
-  "password": "password",
-  "confirmPassword": "password"
+  "email": "elia@test.com",
+  "password": "P@ssw0rd",
+  "confirmPassword": "P@ssw0rd"
 }
 
 ### signin
@@ -17,8 +17,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "test@test.com",
-  "password": "password",
+  "email": "elia@test.com",
+  "password": "P@ssw0rd",
 }
 
 ### signout
