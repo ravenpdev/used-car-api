@@ -50,12 +50,4 @@ export const signupSchema = credentialSchema
 
 export const signinSchema = credentialSchema;
 
-export const updateUserSchema = createUpdateSchema(users, {
-  email: z.email(),
-  password: z.string().min(8),
-})
-  .pick({
-    email: true,
-    password: true,
-  })
-  .partial();
+export const updateUserSchema = credentialSchema.partial();

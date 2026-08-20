@@ -163,4 +163,20 @@ describe('Authentication (e2e)', () => {
   it('should return a 403 if not authenticated and tried to access whoami', async () => {
     await request(app.getHttpServer()).get('/auth/whoami').expect(403);
   });
+
+  it('should logout', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await agent
+      .post('/auth/signup')
+      .send({
+        email: 'test@test.com',
+        password: 'P@ssw0rd',
+        confirmPassword: 'P@ssw0rd',
+      })
+      .expect(201);
+
+    await agent.post('/auth/signout').expect(204);
+
+    await agent.get('/auth/whoami').expect(403);
+  });
 });
