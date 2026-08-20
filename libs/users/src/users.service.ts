@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
+import argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -83,6 +84,10 @@ export class UsersService {
   }
 
   async update(id: number, data: UpdateUserDto): Promise<UserWithoutPassword> {
+    if (data.password) {
+      data.password = await argon2.hash(data.password);
+    }
+
     const [user] = await this.db
       .update(users)
       .set({ ...data, updatedAt: new Date() })

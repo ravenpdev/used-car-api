@@ -1,11 +1,13 @@
-import { Database, DB } from '@app/database';
+import { Database, DB, DB_CLIENT } from '@app/database';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { cleanDatabase } from './utils/cleanup';
+import postgres from 'postgres';
 
 let app: INestApplication;
 let db: Database;
+let dbClient: ReturnType<typeof postgres>;
 
 beforeAll(async () => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,7 +18,8 @@ beforeAll(async () => {
 
   await app.init();
 
-  db = moduleFixture.get<Database>(DB);
+  db = moduleFixture.get(DB);
+  dbClient = moduleFixture.get(DB_CLIENT);
 });
 
 beforeEach(async () => {
@@ -24,6 +27,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
+  await dbClient.end();
   await app.close();
 });
 

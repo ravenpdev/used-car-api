@@ -7,6 +7,7 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "setupFilesAfterEnv": ["<rootDir>/setup.ts"],
+  "maxWorkers": 1,
   "moduleNameMapper": {
     "^@app/auth(|/.*)$": "<rootDir>/../libs/auth/src/$1",
     "^@app/common(|/.*)$": "<rootDir>/../libs/common/src/$1",

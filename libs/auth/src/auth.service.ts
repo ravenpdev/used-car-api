@@ -13,6 +13,7 @@ export class AuthService {
     return this.usersService.create({
       email: data.email,
       password: hashedPassword,
+      confirmPassword: hashedPassword,
     });
   }
 

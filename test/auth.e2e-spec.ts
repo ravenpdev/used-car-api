@@ -19,7 +19,7 @@ describe('Authentication (e2e)', () => {
       errors: [
         {
           path: ['email'],
-          message: 'Invalid email',
+          message: 'Invalid email address',
         },
       ],
     });
@@ -47,7 +47,7 @@ describe('Authentication (e2e)', () => {
     });
   });
 
-  it('should return 400 when password and confirmPassword is not match', async () => {
+  it('should return 400 when password and confirmPassword did not match', async () => {
     const response = await request(app.getHttpServer())
       .post('/auth/signup')
       .send({
