@@ -14,6 +14,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import argon2 from 'argon2';
+import { isUniqueError } from '@app/common';
 
 @Injectable()
 export class UsersService {
@@ -34,20 +35,22 @@ export class UsersService {
   }
 
   async create(data: CreateUserDto): Promise<UserWithoutPassword> {
-    const isExist = await this.findByEmail(data.email);
+    try {
+      const [user] = await this.db.insert(users).values(data).returning({
+        id: users.id,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      });
 
-    if (isExist) {
-      throw new ConflictException('Email already exists');
+      return user;
+    } catch (error) {
+      if (isUniqueError(error)) {
+        throw new ConflictException('Email already exists');
+      }
+
+      throw error;
     }
-
-    const [user] = await this.db.insert(users).values(data).returning({
-      id: users.id,
-      email: users.email,
-      createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
-    });
-
-    return user;
   }
 
   async findById(id: number): Promise<UserWithoutPassword> {

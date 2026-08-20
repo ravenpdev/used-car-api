@@ -63,6 +63,7 @@ describe('UsersController', () => {
     const dto: CreateUserDto = {
       email: 'test@test.com',
       password: 'password',
+      confirmPassword: 'password',
     };
 
     usersServiceMock.create.mockResolvedValue({
@@ -83,6 +84,7 @@ describe('UsersController', () => {
     const dto: CreateUserDto = {
       email: 'test@test.com',
       password: 'password',
+      confirmPassword: 'password',
     };
 
     usersServiceMock.create.mockRejectedValue(
